@@ -23,8 +23,6 @@ on:
           required: true
       SONAR_HOST_URL:
         required: true
-      DISCORD_WEBHOOK:
-        required: true
 
 
 jobs:
