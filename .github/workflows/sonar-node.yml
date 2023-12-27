@@ -8,6 +8,12 @@ on:
       branch: 
         required: true
         type: string
+      projectKey:
+        type: string
+        required: true
+      projectBaseDir:
+        type: string
+        required: true
 
     
     secrets:
@@ -40,20 +46,10 @@ jobs:
         run: npm install 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=${{ inputs.projectKey }}
+            -Dsonar.projectBaseDir=${{ inputs.projectBaseDir }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: On failure
-        if: ${{ failure() }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@0.3.2
-        with:
-          args: " @everyone Job it has failed for the SonarQube "
-      - name: End SonarQube
-        uses: Ilshidur/action-discord@0.3.2
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: " @everyone SonarQube has ended his scan check your project pelase "
-          
