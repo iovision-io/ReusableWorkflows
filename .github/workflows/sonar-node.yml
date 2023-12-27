@@ -14,6 +14,9 @@ on:
       projectBaseDir:
         type: string
         required: true
+      bash_script: 
+        type: string
+        required: false
 
     
     secrets:
