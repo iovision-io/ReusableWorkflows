@@ -1,0 +1,49 @@
+name: SonarQube scanner Node version
+on: 
+  workflow_call:
+    inputs:
+      node_version:
+        required: true
+        type: number
+
+    
+    secrets:
+      SONAR_TOKEN:
+          required: true
+      SONAR_HOST_URL:
+        required: true
+      DISCORD_WEBHOOK:
+        required: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: setup NodeJS
+        uses: actions/setup-node@v2.1.3
+        with:
+          node-version: ${{ inputs.node_version }}
+      - name: Install dependencies
+        run: npm install 
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: On failure
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: " @everyone Job it has failed for the SonarQube "
+      - name: End SonarQube
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: " @everyone SonarQube has ended his scan check your project pelase "
+          
