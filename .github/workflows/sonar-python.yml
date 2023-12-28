@@ -9,6 +9,9 @@ on:
       path_requirements:
         type: string
         required: true
+      branch: 
+        required: true
+        type: string
       projectKey:
         type: string
         required: true
